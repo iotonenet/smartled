@@ -1,0 +1,27 @@
+menu "Demo Configuration"
+
+menu "OneNET Configuration"
+
+config DEVICE_ID
+    string "ONENET_DEVICE_ID"
+    help
+        mqtt client id.
+
+config PROJECT_ID
+    string "ONENET_PROJECT_ID"
+    help
+        mqtt username.
+
+config AUTH_INFO
+    string "ONENET_AUTH_INFO"
+    help
+        mqtt password.
+
+config DATA_STREAM
+    string "ONENET_DATA_STREAM"
+    help
+        datastream name.
+
+endmenu
+
+endmenu

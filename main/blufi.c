@@ -41,6 +41,8 @@
 #include "wifi_status.h"
 #include "ble_status.h"
 #include "blink.h"
+#include "sniffer.h"
+#include "onenet.h"
 #include "blufi.h"
 
 static void example_event_callback(esp_blufi_cb_event_t event, esp_blufi_cb_param_t *param);
@@ -125,6 +127,9 @@ static esp_err_t example_net_event_handler(void *ctx, system_event_t *event)
         info.sta_ssid_len = gl_sta_ssid_len;
         esp_blufi_send_wifi_conn_report(mode, ESP_BLUFI_STA_CONN_SUCCESS, 0, &info);
         LOG_INFO("wifiStatus got ip.\n");
+        wifi_connect();
+        init_sniffer();
+        mqtt_app_start();
         break;
     }
     case SYSTEM_EVENT_STA_CONNECTED:
@@ -132,7 +137,6 @@ static esp_err_t example_net_event_handler(void *ctx, system_event_t *event)
         memcpy(gl_sta_bssid, event->event_info.connected.bssid, 6);
         memcpy(gl_sta_ssid, event->event_info.connected.ssid, event->event_info.connected.ssid_len);
         gl_sta_ssid_len = event->event_info.connected.ssid_len;
-        wifi_connect();
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
         /* This is a workaround as ESP32 WiFi libs don't currently

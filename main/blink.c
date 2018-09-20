@@ -14,6 +14,7 @@
 #include "esp_system.h"
 #include "wifi_status.h"
 #include "ble_status.h"
+#include "onenet_status.h"
 #include "blink.h"
 
 
@@ -30,7 +31,7 @@ void blink_task(void *pvParameter)
     gpio_set_direction(BLINK_GPIO, GPIO_MODE_OUTPUT);
     while(1) {
 //    	LOG_INFO("loop for led .\n");
-    	int led_status = get_ble_status() + get_wifi_status();
+    	int led_status = get_ble_status() + get_wifi_status() + get_onenet_status();
     	switch (led_status) {
     		case 1 : {
     			gpio_set_level(BLINK_GPIO, 1);
@@ -55,7 +56,27 @@ void blink_task(void *pvParameter)
 				vTaskDelay(1000 / portTICK_PERIOD_MS);
     			break;
     		}
+    		case 6 : {
+    			/* Blink on (output high) */
+				gpio_set_level(BLINK_GPIO, 1);
+				vTaskDelay(500 / portTICK_PERIOD_MS);
+				/* Blink off (output low) */
+    			gpio_set_level(BLINK_GPIO, 0);
+				vTaskDelay(500 / portTICK_PERIOD_MS);
+    			break;
+    		}
+    		case 7 : {
+    			/* Blink on (output high) */
+				gpio_set_level(BLINK_GPIO, 1);
+				vTaskDelay(7000 / portTICK_PERIOD_MS);
+				/* Blink off (output low) */
+				gpio_set_level(BLINK_GPIO, 0);
+				vTaskDelay(1000 / portTICK_PERIOD_MS);
+    			break;
+    		}
     		case 0 :
+    		case 4 :
+    		case 5 :
     		default : {
     			/* Blink off (output low) */
 				gpio_set_level(BLINK_GPIO, 0);

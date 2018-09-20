@@ -4,8 +4,7 @@
 #
 
 PROJECT_NAME := smartled
-
 COMPONENT_ADD_INCLUDEDIRS := components/include
 
-# include $(IOT_SOLUTION_PATH)/Makefile
+include component_conf.mk
 include $(IDF_PATH)/make/project.mk
