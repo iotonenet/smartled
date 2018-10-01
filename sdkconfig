@@ -77,6 +77,15 @@ CONFIG_MONITOR_BAUD_OTHER_VAL=115200
 CONFIG_MONITOR_BAUD=115200
 
 #
+# SmartLED Configuration
+#
+
+#
+# Blink Configuration
+#
+CONFIG_BLINK_GPIO=16
+
+#
 # Partition Table
 #
 CONFIG_PARTITION_TABLE_SINGLE_APP=y

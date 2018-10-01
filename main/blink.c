@@ -14,10 +14,12 @@
 #include "esp_system.h"
 #include "wifi_status.h"
 #include "ble_status.h"
+#include "driver/gpio.h"
+#include "sdkconfig.h"
 #include "blink.h"
 
 
-#define BLINK_GPIO 2
+#define BLINK_GPIO CONFIG_BLINK_GPIO
 
 static bool wifi_blink_initialised = false;
 static TaskHandle_t xWifiBlinkTask = NULL;
