@@ -35,12 +35,15 @@
 #include "ble_status.h"
 #include "blink.h"
 #include "blufi.h"
+#include "counter.h"
 #include "smartled.h"
 
 void app_main()
 {
 	// init blufi
 	init_blufi();
+	// increate counter
+	increase();
     // init led blink task;
     init_blink();
     // init onenet mqtt
