@@ -240,8 +240,13 @@ CONFIG_MONITOR_BAUD_OTHER_VAL=115200
 CONFIG_MONITOR_BAUD=115200
 
 #
-# Demo Configuration
+# SmartLED Configuration
 #
+
+#
+# Blink Configuration
+#
+CONFIG_BLINK_GPIO=2
 
 #
 # OneNET Configuration
