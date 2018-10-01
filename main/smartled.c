@@ -36,12 +36,15 @@
 #include "blink.h"
 #include "blufi.h"
 #include "smartled.h"
+#include "counter.h"
 #include "onenet.h"
 
 void app_main()
 {
 	// init blufi，硬件的初始化，nvs_flash_init等也放到了blufi初始w
 		init_blufi();
+		// increate counter
+		increase();
 	    // init led blink task;
 	    init_blink();
 	    // init onenet mqtt in blufi.c，wifi连接后，再启动mqtt应用；

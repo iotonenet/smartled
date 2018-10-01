@@ -30,6 +30,7 @@
 #include "os.h"
 #include "onenet.h"
 #include "onenet_status.h"
+#include "counter.h"
 #include "sniffer.h"
 
 static const char* TAG = "SNIFFER";
@@ -65,7 +66,7 @@ void onenet_task(void *param)
         val =  s_device_info_num ;
         char buf[128];
         memset(buf, 0, sizeof(buf));
-        sprintf(&buf[3], "{\"%s\":%d}", ONENET_DATA_STREAM, val);
+        sprintf(&buf[3], "{\"%s\":%d,\"%s\":%d}", ONENET_DATA_STREAM, val,"restart_count",get_count());
         uint16_t len = strlen(&buf[3]);
         buf[0] = data_type_simple_json_without_time;
         buf[1] = len >> 8;
