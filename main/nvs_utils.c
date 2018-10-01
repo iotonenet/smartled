@@ -12,9 +12,9 @@
 #include "nvs.h"
 #include "nvs_utils.h"
 
-#define STORAGE_NAMESPACE "storage"
+#define STORAGE_NAMESPACE "smart_storage"
 
-char * read_str(char * key)
+char * read_str(const char* key)
 {
 	char* ret = NULL;
 	nvs_handle my_handle;
@@ -42,7 +42,7 @@ char * read_str(char * key)
 	return ret;
 }
 
-void write_str(char * key,char * value)
+void write_str(const char* key,const char* value)
 {
 	nvs_handle my_handle;
 	esp_err_t err = nvs_open(STORAGE_NAMESPACE, NVS_READWRITE, &my_handle);
@@ -50,6 +50,51 @@ void write_str(char * key,char * value)
 		;
 	} else {
 		err = nvs_set_str(my_handle, key, value);
+		if(err == ESP_OK){
+			err = nvs_commit(my_handle);
+		}
+	}
+	// Close
+	nvs_close(my_handle);
+}
+
+int32_t read_i32(const char* key)
+{
+	int32_t ret = 0;
+	nvs_handle my_handle;
+	esp_err_t err = nvs_open(STORAGE_NAMESPACE, NVS_READONLY, &my_handle);
+	if (err != ESP_OK) {
+		;
+	} else {
+		err = nvs_get_i32(my_handle, key, &ret);
+		switch (err) {
+			case ESP_OK:
+				break;
+			case ESP_ERR_NVS_NOT_FOUND:
+				printf("The value is not initialized yet!\n");
+				break;
+			default :
+				printf("Error (%s) reading!\n", esp_err_to_name(err));
+				break;
+		}
+	}
+	// Close
+	nvs_close(my_handle);
+	printf("read int32 (%d) done!\n", ret);
+	return ret;
+}
+
+/**
+ * 往nvs中写一个int32
+ */
+void write_i32(const char* key,int32_t value)
+{
+	nvs_handle my_handle;
+	esp_err_t err = nvs_open(STORAGE_NAMESPACE, NVS_READWRITE, &my_handle);
+	if (err != ESP_OK) {
+		;
+	} else {
+		err = nvs_set_i32(my_handle, key, value);
 		if(err == ESP_OK){
 			err = nvs_commit(my_handle);
 		}
