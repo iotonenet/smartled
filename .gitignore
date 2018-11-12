@@ -3,3 +3,4 @@ sdkconfig.old
 .settings
 .project
 .cproject
+.DS_Store
