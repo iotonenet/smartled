@@ -5,8 +5,3 @@
  *      Author: songfei
  */
 #pragma once
-
-/**
- * init blufi
- */
-void init_blufi(void);

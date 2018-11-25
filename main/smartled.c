@@ -17,35 +17,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/event_groups.h"
-#include "esp_system.h"
-#include "esp_wifi.h"
-#include "esp_event_loop.h"
-#include "esp_log.h"
-#include "nvs_flash.h"
-#include "esp_bt.h"
-#include "esp_blufi_api.h"
-#include "esp_bt_defs.h"
-#include "esp_gap_ble_api.h"
-#include "esp_bt_main.h"
-#include "esp_bt_device.h"
-#include "wifi_status.h"
-#include "ble_status.h"
-#include "blink.h"
-#include "blufi.h"
-#include "counter.h"
+#include "systools.h"
+#include "network.h"
 #include "smartled.h"
 
 void app_main()
 {
-	// init blufi
-	init_blufi();
-	// increate counter
-	increase();
-    // init led blink task;
-    init_blink();
-    // init onenet mqtt
-
+    // init systools;init nvs;init reboot counter;init led blinker;
+    init_systools();
+	// init network;
+	init_network();
 }

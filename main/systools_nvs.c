@@ -10,9 +10,23 @@
 #include "esp_system.h"
 #include "nvs_flash.h"
 #include "nvs.h"
-#include "nvs_utils.h"
+#include "systools.h"
 
 #define STORAGE_NAMESPACE "smart_storage"
+
+void init_nvs()
+{
+	// Initialize NVS
+	LOG_INFO("init nvs.");
+	esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+		LOG_ERROR("init nvs error.");
+		ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
+	LOG_INFO("init nvs done.");
+}
 
 char * read_str(const char* key)
 {

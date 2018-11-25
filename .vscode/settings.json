@@ -1,0 +1,10 @@
+{
+    "aliosStudio.sdkPath": "/Users/songfei/.aos/AliOS-Things",
+    "files.associations": {
+        "systools.h": "c",
+        "common.h": "c",
+        "stdint.h": "c",
+        "smartled.h": "c",
+        "network.h": "c"
+    }
+}

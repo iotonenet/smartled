@@ -5,17 +5,12 @@
  *      Author: songfei
  */
 #include <stdio.h>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "nvs.h"
-#include "nvs_utils.h"
-#include "counter.h"
 
-#define RESTART_COUNTER "restart_counter"
+#include "systools.h"
 
-void increase(void)
+#define RESTART_COUNTER "reboot_counter"
+
+void reboot_increase(void)
 {
 	int32_t current = read_i32(RESTART_COUNTER);
 	write_i32(RESTART_COUNTER,++current);
