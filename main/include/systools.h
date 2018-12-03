@@ -80,3 +80,15 @@ void reboot_increase(void);
  */
 int32_t get_count();
 // counter end
+
+// print heap begin
+/**
+ * open task print heap;
+ */
+void open_print_heap();
+
+/**
+ * close task print heap;
+ */
+void close_print_heap();
+// print heap end

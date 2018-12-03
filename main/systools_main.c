@@ -23,4 +23,6 @@ void init_systools(void)
 	reboot_increase();
 	// 打开led
 	open_blink();
+	// 打开print heap
+	open_print_heap();
 }

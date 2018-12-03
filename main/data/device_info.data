@@ -1,0 +1,18 @@
+#define PRODUCT_KEY "a1nWD8fJ2kB"
+#define DEVICE_NAME "PH8cFk8GD1IqTnqaKWmw"
+#define DEVICE_SECRET "rLNzQlvsuGS6XwJGtI26F4Q8RQJZKakd"
+
+#define CLIENT_ID "OFNUCPMBKSXWF9O7"
+#define TIMESTAMP "1543833544000"
+
+/**
+ * clientID: OFNUCPMBKSXWF9O7|securemode=2,signmethod=hmacsha1,timestamp=1543833544000|
+ * username: PH8cFk8GD1IqTnqaKWmw&a1nWD8fJ2kB
+ * password: 91a4091eaba7b6f50f34a85f0380682d56088c4f
+ *
+ */
+
+#define MQTT_URI "mqtts://"PRODUCT_KEY".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
+#define MQTT_CLIENT_ID CLIENT_ID"|securemode=2,signmethod=hmacsha1,timestamp="TIMESTAMP"|"
+#define MQTT_USERNAME DEVICE_NAME"&"PRODUCT_KEY
+#define MQTT_PASSWORD "91a4091eaba7b6f50f34a85f0380682d56088c4f"

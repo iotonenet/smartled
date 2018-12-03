@@ -46,11 +46,12 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         xEventGroupSetBits(s_wifi_event_group, CONNECTED_BIT);
         switch_led(CODE_LED_WIFI,1);
         // TODO init mqtt
+        init_mqtt();
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
+        switch_led(CODE_LED_WIFI,0);
         esp_wifi_connect();
         xEventGroupClearBits(s_wifi_event_group, CONNECTED_BIT);
-        switch_led(CODE_LED_WIFI,0);
         break;
     default:
         break;
@@ -68,6 +69,8 @@ static void initialise_wifi(void)
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
 
     ESP_ERROR_CHECK( esp_wifi_init(&cfg) );
+    // 每次重启要不要自动连？先不连吧，后期通过mesh自由组网
+    ESP_ERROR_CHECK( esp_wifi_set_storage(WIFI_STORAGE_FLASH) );
     ESP_ERROR_CHECK( esp_wifi_set_mode(WIFI_MODE_STA) );
     ESP_ERROR_CHECK( esp_wifi_start() );
     LOG_INFO("initialise wifi done.waitting for smart config.");
