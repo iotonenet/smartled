@@ -1,10 +1,27 @@
 {
-    "aliosStudio.sdkPath": "/Users/songfei/.aos/AliOS-Things",
+    // "aliosStudio.sdkPath": "/Users/songfei/.aos/AliOS-Things",
     "files.associations": {
         "systools.h": "c",
         "common.h": "c",
         "stdint.h": "c",
         "smartled.h": "c",
-        "network.h": "c"
-    }
+        "network.h": "c",
+        "linkkit_export.h": "c",
+        "unistd.h": "c",
+        "iot_import.h": "c",
+        "*.data": "c",
+        "iot_export_cota.h": "c",
+        "iot_export_fota.h": "c",
+        "freertos.h": "c",
+        "nvs_flash.h": "c",
+        "esp_system.h": "c",
+        "esp_wifi.h": "c",
+        "mqtt_client.h": "c",
+        "queue.h": "c",
+        "esp_event_loop.h": "c",
+        "sockets.h": "c",
+        "config.h": "c",
+        "gpio.h": "c"
+    },
+    "aliosStudio.sdkPath": "/Users/songfei/.aos/AliOS-Things"
 }
