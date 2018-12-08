@@ -3,16 +3,23 @@
 #define DEVICE_SECRET "rLNzQlvsuGS6XwJGtI26F4Q8RQJZKakd"
 
 #define CLIENT_ID "OFNUCPMBKSXWF9O7"
-#define TIMESTAMP "1543833544000"
 
 /**
- * clientID: OFNUCPMBKSXWF9O7|securemode=2,signmethod=hmacsha1,timestamp=1543833544000|
+ * clientID: OFNUCPMBKSXWF9O7|securemode=2,signmethod=hmacsha1|
  * username: PH8cFk8GD1IqTnqaKWmw&a1nWD8fJ2kB
- * password: 91a4091eaba7b6f50f34a85f0380682d56088c4f
- *
+ * password: d0d3ba0f04200980833b6bc0c1124402b3798c6c
+ * https://1024tools.com/hmac 生成密码，再用mqtt.fx试一试信息是否正确
+ * clientIdOFNUCPMBKSXWF9O7deviceNamePH8cFk8GD1IqTnqaKWmwproductKeya1nWD8fJ2kB
  */
 
 #define MQTT_URI "mqtts://"PRODUCT_KEY".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
-#define MQTT_CLIENT_ID CLIENT_ID"|securemode=2,signmethod=hmacsha1,timestamp="TIMESTAMP"|"
+#define MQTT_CLIENT_ID CLIENT_ID"|securemode=2,signmethod=hmacsha1|"
 #define MQTT_USERNAME DEVICE_NAME"&"PRODUCT_KEY
-#define MQTT_PASSWORD "91a4091eaba7b6f50f34a85f0380682d56088c4f"
+#define MQTT_PASSWORD "d0d3ba0f04200980833b6bc0c1124402b3798c6c"
+
+
+/* These are pre-defined topics to subscribe */
+#define TOPIC_PROPERTY_SET            "/sys/"PRODUCT_KEY"/"DEVICE_NAME"/thing/service/property/set"
+
+/* These are pre-defined topics to publish*/
+#define TOPIC_PROPERTY_POST            "/sys/"PRODUCT_KEY"/"DEVICE_NAME"/thing/event/property/post"

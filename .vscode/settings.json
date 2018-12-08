@@ -21,7 +21,12 @@
         "esp_event_loop.h": "c",
         "sockets.h": "c",
         "config.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "cjson.h": "c",
+        "esp_log.h": "c",
+        "cjson_utils.h": "c",
+        "core.h": "c",
+        "mqtt_msg.h": "c"
     },
     "aliosStudio.sdkPath": "/Users/songfei/.aos/AliOS-Things"
 }

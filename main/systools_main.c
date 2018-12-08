@@ -24,5 +24,5 @@ void init_systools(void)
 	// 打开led
 	open_blink();
 	// 打开print heap
-	open_print_heap();
+	// open_print_heap();
 }

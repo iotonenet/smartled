@@ -40,7 +40,14 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
 {
     switch(event->event_id) {
     case SYSTEM_EVENT_STA_START:
-        xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);
+        LOG_INFO("sta start,wifi connect...");
+        esp_err_t ret = esp_wifi_connect();
+        if(ret != ESP_OK){
+            LOG_INFO("waitting for smart config.");
+            xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);
+        } else {
+            LOG_INFO("wifi connected by stored info.");
+        }
         break;
     case SYSTEM_EVENT_STA_GOT_IP:
         xEventGroupSetBits(s_wifi_event_group, CONNECTED_BIT);

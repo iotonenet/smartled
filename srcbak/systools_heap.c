@@ -14,14 +14,16 @@
 #include "freertos/task.h"
 #include "systools.h"
 
-static int print_status = 1;
+static int print_status = 0;
 static bool print_initialised = false;
 static TaskHandle_t xPrintTask = NULL;
 
 void print_task(void *pvParameter)
 {
 	while (1){
-		LOG_INFO("============free heap size =%d bytes==========", esp_get_free_heap_size());
+		if(print_status){
+			LOG_INFO("============free heap size =%d bytes==========", esp_get_free_heap_size());
+		}
 		vTaskDelay(5000 / portTICK_PERIOD_MS);
 	}
 }
