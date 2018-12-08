@@ -34,7 +34,35 @@ static const int CONNECTED_BIT = BIT0;
 static const int ESPTOUCH_DONE_BIT = BIT1;
 static const char *TAG = "sc";
 
+// 记录smart config服务状态
+static bool sc_initialised = false;
+static TaskHandle_t xScTask = NULL;
+static int error_count = 0;
+
 void smartconfig_task(void * parm);
+
+void open_smartconfig(void)
+{
+	LOG_INFO("open smartconfig .\n");
+	if (!sc_initialised)
+	{
+		xTaskCreate(&smartconfig_task, "smartconfig_task", 2048, NULL, 6, &xScTask);
+		sc_initialised = true;
+	}
+}
+
+void close_smartconfig(void)
+{
+	LOG_INFO("close smartconfig .\n");
+	if (sc_initialised)
+	{
+		if (xScTask)
+		{
+			vTaskDelete(xScTask);
+		}
+		sc_initialised = false;
+	}
+}
 
 static esp_err_t event_handler(void *ctx, system_event_t *event)
 {
@@ -44,20 +72,28 @@ static esp_err_t event_handler(void *ctx, system_event_t *event)
         esp_err_t ret = esp_wifi_connect();
         if(ret != ESP_OK){
             LOG_INFO("waitting for smart config.");
-            xTaskCreate(smartconfig_task, "smartconfig_task", 4096, NULL, 3, NULL);
+            open_smartconfig();
         } else {
             LOG_INFO("wifi connected by stored info.");
         }
         break;
     case SYSTEM_EVENT_STA_GOT_IP:
+        // 重连后，失败次数归0
+        error_count = 0;
         xEventGroupSetBits(s_wifi_event_group, CONNECTED_BIT);
         switch_led(CODE_LED_WIFI,1);
         // TODO init mqtt
         init_mqtt();
         break;
     case SYSTEM_EVENT_STA_DISCONNECTED:
+        // 在这里记录连接失败的次数，如果失败次数超过5次，则清理存储的信息，打开smart config;
         switch_led(CODE_LED_WIFI,0);
-        esp_wifi_connect();
+        error_count ++;
+        if(error_count >= 5){
+            open_smartconfig();
+        } else {
+            esp_wifi_connect();
+        }
         xEventGroupClearBits(s_wifi_event_group, CONNECTED_BIT);
         break;
     default:

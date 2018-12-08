@@ -45,9 +45,11 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 
             // msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
             // ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+            switch_led(CODE_LED_MQTT,1);
             break;
         case MQTT_EVENT_DISCONNECTED:
             ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+            switch_led(CODE_LED_MQTT,0);
             break;
 
         case MQTT_EVENT_SUBSCRIBED:
