@@ -15,7 +15,7 @@
 #include "lwip/dns.h"
 #include "lwip/netdb.h"
 
-#include "esp_log.h"
+#include "cJSON.h"
 #include "mqtt_client.h"
 #include "network.h"
 #include "systools.h"
@@ -24,10 +24,25 @@
 
 #include "data/device_info.data"
 
-static const char *TAG = "MQTTS";
-
 extern const uint8_t aliyuncs_com_pem_start[] asm("_binary_aliyuncs_com_pem_start");
 extern const uint8_t aliyuncs_com_pem_end[]   asm("_binary_aliyuncs_com_pem_end");
+
+static esp_mqtt_client_handle_t mqtt_client = NULL;
+
+void mqtt_propery_post(cJSON *params)
+{
+    if(mqtt_client == NULL){
+        LOG_ERROR("mqtt_client is null.propery can not post.%s.",cJSON_Print(params));
+        return;
+    }
+    LOG_INFO("properties to post:%s.",cJSON_PrintUnformatted(params));
+    cJSON *data = cJSON_CreateObject();
+    cJSON_AddStringToObject(data,"method",METHOD_PROPERTY_POST);
+    cJSON_AddItemToObject(data,"params",params);
+    esp_mqtt_client_publish(mqtt_client, TOPIC_PROPERTY_POST, cJSON_PrintUnformatted(data), 0, 0, 0);
+    cJSON_Delete(data);
+    LOG_INFO("properties post successful.");
+}
 
 static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
 {
@@ -36,9 +51,9 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
     // your_context_t *context = event->context;
     switch (event->event_id) {
         case MQTT_EVENT_CONNECTED:
-            ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
+            LOG_INFO("MQTT_EVENT_CONNECTED");
             msg_id = esp_mqtt_client_subscribe(client, TOPIC_PROPERTY_SET, 0);
-            ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            LOG_INFO("sent subscribe successful, msg_id=%d", msg_id);
 
             // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
             // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
@@ -48,34 +63,33 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
             switch_led(CODE_LED_MQTT,1);
             break;
         case MQTT_EVENT_DISCONNECTED:
-            ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
+            LOG_INFO("MQTT_EVENT_DISCONNECTED");
             switch_led(CODE_LED_MQTT,0);
             break;
 
         case MQTT_EVENT_SUBSCRIBED:
-            ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d.", event->msg_id);
+            LOG_INFO("MQTT_EVENT_SUBSCRIBED, msg_id=%d.", event->msg_id);
             // post reboot counter.
-            int32_t counter = get_count();
-            char *buf = (char *) malloc(41+strlen(METHOD_PROPERTY_POST)+sizeof(counter));
-            sprintf(buf, "%s%s%s%d%s", "{\"method\":\"", METHOD_PROPERTY_POST, "\",\"params\":{\"RebootCounter\":",counter,"}}");
-            LOG_INFO("msg:%s.",buf);
-            msg_id = esp_mqtt_client_publish(client, TOPIC_PROPERTY_POST, buf, 0, 0, 0);
-            LOG_INFO("sent publish successful, msg_id=%d", msg_id);
+            cJSON *params = cJSON_CreateObject();
+            cJSON_AddNumberToObject(params,"RebootCounter",get_count());
+            mqtt_propery_post(params);
+            // free(params);
+            params = NULL;
             break;
         case MQTT_EVENT_UNSUBSCRIBED:
-            ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d.", event->msg_id);
+            LOG_INFO("MQTT_EVENT_UNSUBSCRIBED, msg_id=%d.", event->msg_id);
             break;
         case MQTT_EVENT_PUBLISHED:
-            ESP_LOGI(TAG, "MQTT_EVENT_PUBLISHED, msg_id=%d.", event->msg_id);
+            LOG_INFO("MQTT_EVENT_PUBLISHED, msg_id=%d.", event->msg_id);
             break;
         case MQTT_EVENT_DATA:
-            ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+            LOG_INFO("MQTT_EVENT_DATA");
             mqtt_msg_handler(event);
             // printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
             // printf("DATA=%.*s\r\n", event->data_len, event->data);
             break;
         case MQTT_EVENT_ERROR:
-            ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
+            LOG_INFO("MQTT_EVENT_ERROR");
             break;
     }
     return ESP_OK;
@@ -92,21 +106,14 @@ static void mqtt_app_start(void)
         .cert_pem = (const char *)aliyuncs_com_pem_start,
     };
 
-    ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
-    esp_mqtt_client_handle_t client = esp_mqtt_client_init(&mqtt_cfg);
-    esp_mqtt_client_start(client);
+    LOG_INFO("[APP] Free memory: %d bytes", esp_get_free_heap_size());
+    mqtt_client = esp_mqtt_client_init(&mqtt_cfg);
+    esp_mqtt_client_start(mqtt_client);
 }
 
 void init_mqtt()
 {
-    ESP_LOGI(TAG, "[APP] mqtt startup..");
-
-    esp_log_level_set("*", ESP_LOG_DEBUG);
-    esp_log_level_set("MQTT_CLIENT", ESP_LOG_DEBUG);
-    esp_log_level_set("TRANSPORT_TCP", ESP_LOG_DEBUG);
-    esp_log_level_set("TRANSPORT_SSL", ESP_LOG_DEBUG);
-    esp_log_level_set("TRANSPORT", ESP_LOG_DEBUG);
-    esp_log_level_set("OUTBOX", ESP_LOG_DEBUG);
+    LOG_INFO("[APP] mqtt startup..");
 
     mqtt_app_start();
 }

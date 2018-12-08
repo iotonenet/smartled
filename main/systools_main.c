@@ -25,4 +25,11 @@ void init_systools(void)
 	open_blink();
 	// 打开print heap
 	// open_print_heap();
+    esp_log_level_set("*", ESP_LOG_DEBUG);
+    esp_log_level_set("MQTT_CLIENT", ESP_LOG_DEBUG);
+    esp_log_level_set("TRANSPORT_TCP", ESP_LOG_DEBUG);
+    esp_log_level_set("TRANSPORT_SSL", ESP_LOG_DEBUG);
+    esp_log_level_set("TRANSPORT", ESP_LOG_DEBUG);
+    esp_log_level_set("OUTBOX", ESP_LOG_DEBUG);
+
 }

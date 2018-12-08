@@ -9,6 +9,7 @@
 #include "core.h"
 #include "systools.h"
 #include "constants.h"
+#include "network.h"
 
 #include "data/device_info.data"
 
@@ -18,7 +19,7 @@ void properties_set(cJSON *params)
         LOG_ERROR("property set params is empty.");
         return;
     }
-    LOG_INFO("params:%s.",cJSON_Print(params));
+    LOG_INFO("params:%s.",cJSON_PrintUnformatted(params));
     // ScreenSwitch property set
     if(cJSON_HasObjectItem(params,"ScreenSwitch")){
         LOG_INFO("property set for ScreenSwitch.");
@@ -29,7 +30,28 @@ void properties_set(cJSON *params)
             close_blink();
         }
     }
-
+    if(cJSON_HasObjectItem(params,"LightSwitch")){
+        LOG_INFO("property set for LightSwitch.");
+        // TODO for LightSwitch
+        // int sw = cJSON_GetObjectItem(params,"LightSwitch")->valueint;
+    }
+    if(cJSON_HasObjectItem(params,"RGBColor")){
+        LOG_INFO("property set for RGBColor.");
+        // TODO for RGBColor,need store RGBColor value in nvs;
+    }
+    if(cJSON_HasObjectItem(params,"WorkMode")){
+        LOG_INFO("property set for WorkMode.");
+        // TODO for WorkMode,need store WorkMode value in nvs;
+    }
+    if(cJSON_HasObjectItem(params,"ColorTemperature")){
+        LOG_INFO("property set for ColorTemperature.");
+        // TODO for LightSwitch,need store ColorTemperature value in nvs;
+    }
+    if(cJSON_HasObjectItem(params,"Brightness")){
+        LOG_INFO("property set for Brightness.");
+        // TODO for LightSwitch,need store Brightness value in nvs;
+    }
+    mqtt_propery_post(params);
 }
 
 void mqtt_msg_handler(esp_mqtt_event_handle_t event)
@@ -56,8 +78,10 @@ void mqtt_msg_handler(esp_mqtt_event_handle_t event)
     } else {
         LOG_INFO("other command recieved,%s.",method);
     }
-    cJSON_Delete(dataJson);
+    // free(dataJson);
+    dataJson = NULL;
     free(method);
+    method = NULL;
     LOG_INFO("[APP] Free memory: %d bytes", esp_get_free_heap_size());
 
 }
