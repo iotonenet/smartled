@@ -20,6 +20,7 @@
 #include "systools.h"
 #include "network.h"
 #include "smartled.h"
+#include "Adafruit_NeoPixel.h"
 
 void app_main()
 {
@@ -27,4 +28,7 @@ void app_main()
     init_systools();
 	// init network;
 	init_network();
+
+    WS2812B_Init();
+    WS2812B_Test();
 }
