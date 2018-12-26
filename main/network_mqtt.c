@@ -29,6 +29,20 @@ extern const uint8_t aliyuncs_com_pem_end[]   asm("_binary_aliyuncs_com_pem_end"
 
 static esp_mqtt_client_handle_t mqtt_client = NULL;
 
+char* strcatData(char* data)
+{
+    // LOG_INFO("data len:%d.",strlen(data));
+    int totalSize = strlen(data)+1;
+    char* result = (char *) malloc(totalSize);
+    result[0] = 35;
+    for(int i = 1; i <= strlen(data) ; i ++){
+        result[i] = data[i-1];
+    }
+    result[totalSize] = '\0';
+    // LOG_INFO("strcat result:%s.",result);
+    return result;
+}
+
 void mqtt_propery_post(cJSON *params)
 {
     if(mqtt_client == NULL){
@@ -36,11 +50,9 @@ void mqtt_propery_post(cJSON *params)
         return;
     }
     LOG_INFO("properties to post:%s.",cJSON_PrintUnformatted(params));
-    cJSON *data = cJSON_CreateObject();
-    cJSON_AddStringToObject(data,"method",METHOD_PROPERTY_POST);
-    cJSON_AddItemToObject(data,"params",params);
-    esp_mqtt_client_publish(mqtt_client, TOPIC_PROPERTY_POST, cJSON_PrintUnformatted(data), 0, 0, 0);
-    cJSON_Delete(data);
+    char* data = strcatData(cJSON_PrintUnformatted(params));
+    esp_mqtt_client_publish(mqtt_client, TOPIC_PROPERTY_POST, data, 0, 0, 0);
+    free(data);
     LOG_INFO("properties post successful.");
 }
 
@@ -53,13 +65,11 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
         case MQTT_EVENT_CONNECTED:
             LOG_INFO("MQTT_EVENT_CONNECTED");
             msg_id = esp_mqtt_client_subscribe(client, TOPIC_PROPERTY_SET, 0);
-            LOG_INFO("sent subscribe successful, msg_id=%d", msg_id);
+            LOG_INFO("sent subscribe successful for iot/propset, msg_id=%d", msg_id);
 
-            // msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
-            // ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+            msg_id = esp_mqtt_client_subscribe(client, TOPIC_PROPERTY_SET, 0);
+            LOG_INFO("sent subscribe successful for iot/propget, msg_id=%d", msg_id);
 
-            // msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
-            // ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
             switch_led(CODE_LED_MQTT,1);
             break;
         case MQTT_EVENT_DISCONNECTED:

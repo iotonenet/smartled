@@ -18,5 +18,6 @@ void reboot_increase(void)
 
 int32_t get_count()
 {
+	// write_i32(RESTART_COUNTER,0);
 	return read_i32(RESTART_COUNTER);
 }

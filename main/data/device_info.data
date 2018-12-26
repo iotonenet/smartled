@@ -12,14 +12,15 @@
  * clientIdOFNUCPMBKSXWF9O7deviceNamePH8cFk8GD1IqTnqaKWmwproductKeya1nWD8fJ2kB
  */
 
-#define MQTT_URI "mqtts://"PRODUCT_KEY".iot-as-mqtt.cn-shanghai.aliyuncs.com:1883"
-#define MQTT_CLIENT_ID CLIENT_ID"|securemode=2,signmethod=hmacsha1|"
-#define MQTT_USERNAME DEVICE_NAME"&"PRODUCT_KEY
-#define MQTT_PASSWORD "d0d3ba0f04200980833b6bc0c1124402b3798c6c"
+#define MQTT_URI "mqtt://172.16.196.3:8007"
+#define MQTT_CLIENT_ID "OFNUCPMBKSXWF9O7"
+#define MQTT_USERNAME "D000000002D"
+#define MQTT_PASSWORD "{\"clientInfo\":\"DEMO_CLIENT|1.0.0\",\"deviceInfo\":\"DEMO_ID|DEMO_TYPE\",\"signature\":\"985A967CC98DEC0F93077A0142C8E28BCD988584D47679DF03AE7408284B9BDDE98A045CFC7069FCF78BE6B230582B4B\",\"timestamp\":\"1545729216308\"}"
 
 
 /* These are pre-defined topics to subscribe */
-#define TOPIC_PROPERTY_SET            "/sys/"PRODUCT_KEY"/"DEVICE_NAME"/thing/service/property/set"
+#define TOPIC_PROPERTY_SET            "iot/propset"
+#define TOPIC_PROPERTY_GET            "iot/propget"
 
 /* These are pre-defined topics to publish*/
-#define TOPIC_PROPERTY_POST            "/sys/"PRODUCT_KEY"/"DEVICE_NAME"/thing/event/property/post"
+#define TOPIC_PROPERTY_POST            "iot/proppost"

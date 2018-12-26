@@ -19,7 +19,7 @@ void properties_set(cJSON *params)
         LOG_ERROR("property set params is empty.");
         return;
     }
-    LOG_INFO("params:%s.",cJSON_PrintUnformatted(params));
+    LOG_INFO("property set,params:%s.",cJSON_PrintUnformatted(params));
     // ScreenSwitch property set
     if(cJSON_HasObjectItem(params,"ScreenSwitch")){
         LOG_INFO("property set for ScreenSwitch.");
@@ -30,58 +30,42 @@ void properties_set(cJSON *params)
             close_blink();
         }
     }
-    if(cJSON_HasObjectItem(params,"LightSwitch")){
-        LOG_INFO("property set for LightSwitch.");
-        // TODO for LightSwitch
-        // int sw = cJSON_GetObjectItem(params,"LightSwitch")->valueint;
-    }
-    if(cJSON_HasObjectItem(params,"RGBColor")){
-        LOG_INFO("property set for RGBColor.");
-        // TODO for RGBColor,need store RGBColor value in nvs;
-    }
-    if(cJSON_HasObjectItem(params,"WorkMode")){
-        LOG_INFO("property set for WorkMode.");
-        // TODO for WorkMode,need store WorkMode value in nvs;
-    }
-    if(cJSON_HasObjectItem(params,"ColorTemperature")){
-        LOG_INFO("property set for ColorTemperature.");
-        // TODO for LightSwitch,need store ColorTemperature value in nvs;
-    }
-    if(cJSON_HasObjectItem(params,"Brightness")){
-        LOG_INFO("property set for Brightness.");
-        // TODO for LightSwitch,need store Brightness value in nvs;
-    }
     mqtt_propery_post(params);
+}
+
+void properties_get(cJSON *params)
+{
+    if(params == NULL){
+        LOG_ERROR("property get params is empty.");
+        return;
+    }
+    LOG_INFO("property get,params:%s.",cJSON_PrintUnformatted(params));
 }
 
 void mqtt_msg_handler(esp_mqtt_event_handle_t event)
 {
     LOG_INFO("topic:%.*s.",event->topic_len,event->topic);
     LOG_INFO("data:%.*s.",event->data_len,event->data);
-    // LOG_INFO("data len:%d.",event->data_len);
-    // char *topic = (char *)malloc(event->topic_len);
-    // char *data = (char *)malloc(event->data_len);
-    // memcpy(topic,event->topic,event->topic_len);
-    // topic[event->topic_len] = '\0';
-    // memcpy(data,event->data,event->data_len);
-    // data[event->data_len] = '\0';
+    char *topic = (char *)malloc(event->topic_len);
+    memcpy(topic,event->topic,event->topic_len);
+    topic[event->topic_len] = '\0';
+    
     cJSON *dataJson = cJSON_Parse(event->data);
     if(dataJson == NULL){
         LOG_ERROR("invalid data,%.*s.",event->data_len,event->data);
     }
-    char *method = cJSON_GetObjectItem(dataJson,"method")->valuestring;
-    // LOG_INFO("TOPIC=%s.", topic);
-    // LOG_INFO("DATA=%s.", data);
-    if(strcmp(METHOD_PROPERTY_SET, method) == 0){
+    if(strcmp(TOPIC_PROPERTY_SET, topic) == 0){
         LOG_INFO("property set msg recieved.");
-        properties_set(cJSON_GetObjectItem(dataJson,"params"));
+        properties_set(dataJson);
+    } else if(strcmp(TOPIC_PROPERTY_GET, topic) == 0){
+        LOG_INFO("property get msg recieved.");
+        properties_set(dataJson);
     } else {
-        LOG_INFO("other command recieved,%s.",method);
+        LOG_INFO("other command recieved,%s.",topic);
     }
     // free(dataJson);
     dataJson = NULL;
-    free(method);
-    method = NULL;
+    free(topic);
+    topic = NULL;
     LOG_INFO("[APP] Free memory: %d bytes", esp_get_free_heap_size());
-
 }

@@ -29,6 +29,6 @@ void app_main()
 	// init network;
 	init_network();
 
-    WS2812B_Init();
-    WS2812B_Test();
+    // WS2812B_Init();
+    // WS2812B_Test();
 }
